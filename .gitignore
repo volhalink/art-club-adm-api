@@ -1,0 +1,7 @@
+# .net
+**/.vs/**
+**/mongodb/**
+**/obj/**
+**/bin/**
+*.user
+ArtClub.AdminAPI/ArtClub.AdminAPI/appsettings.Development.json
