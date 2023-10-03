@@ -1,0 +1,33 @@
+upstream backend {
+    server artclub_adm_api:7304;
+}
+
+upstream frontend {
+    server artclub_adm_frontend:7305;
+}
+
+server {
+  listen ${NGINX_PORT} ssl;
+  listen [::]:${NGINX_PORT} ssl http2;
+  server_name ${NGINX_HOST};
+
+  ssl_certificate /root/.aspnet/https/dev_Artclub_adm.pem;
+  ssl_certificate_key /root/.aspnet/https/dev_Artclub_adm.key;
+
+  location / {
+    proxy_pass https://frontend/;
+  }
+
+  location ~ /api {
+    proxy_pass https://backend$request_uri;
+    proxy_set_header   X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header   X-Forwarded-Proto $scheme;
+    proxy_set_header   Host localhost:${NGINX_PORT};
+    proxy_set_header Cookie $http_cookie;
+  }
+
+  error_page 500 502 503 504 /50x.html;
+  location = /50x.html {
+    root /usr/share/nginx/html;
+  }
+}

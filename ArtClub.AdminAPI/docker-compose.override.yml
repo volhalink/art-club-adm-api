@@ -1,0 +1,33 @@
+version: '3.4'
+
+services:
+  artclub_adm_api:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=https://+:7304
+      - MongoDbSettings__ConnectionString=mongodb://api:dev-pass@artclub_mongodb:27017/?authSource=artclub
+      - MongoDbSettings__DatabaseName=artclub
+      - MongoDbSettings__LearningPathesCollectionName=learningpathes
+      - Kestrel__Certificates__Default__Path=/root/.aspnet/https/dev_Artclub_adm.pfx
+    ports:
+      - "7304:7304"
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+  artclub_adm_frontend:
+    environment:
+      - NODE_ENV=Development
+      - FRONTEND_PORT=7305
+      - KEY_PATH=/root/https_cert/dev_Artclub_adm.key
+      - CERT_PATH=/root/https_cert/dev_Artclub_adm.pem
+    ports:
+      - "7305:7305"
+    volumes:
+      - ${APPDATA}/ASP.NET/Https:/root/https_cert:ro
+      - ../../art-club-adm:/app
+      - /app/node_modules/
+  nginx:
+    ports:
+      - "7306:7306"
+    volumes:
+      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro

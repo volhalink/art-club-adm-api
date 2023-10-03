@@ -1,0 +1,38 @@
+version: '3.4'
+
+services:
+  artclub_adm_api:
+    container_name: artclub_adm_api
+    image: ${DOCKER_REGISTRY-}artclubadminapi
+    build:
+      context: .
+      dockerfile: ArtClub.AdminAPI/Dockerfile
+    networks:
+      - artclub-adm
+      - artclub_artclub_mongodb
+  artclub_adm_frontend:
+    container_name: artclub_adm_frontend
+    image: ${DOCKER_REGISTRY-}artclubadmfrontend
+    build:
+      context: .
+      dockerfile: ../../art-club-adm/Dockerfile
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+    networks:
+      - artclub-adm
+  nginx:
+    container_name: artclub_adm
+    image: nginx:1.24.0
+    volumes:
+     - ./nginx/templates:/etc/nginx/templates
+    environment:
+     - NGINX_HOST=artclub_adm
+     - NGINX_PORT=7306
+    networks:
+      - artclub-adm
+    command: [nginx-debug, '-g', 'daemon off;']
+networks:
+  artclub-adm:
+    driver: bridge
+  artclub_artclub_mongodb:
+    external: true

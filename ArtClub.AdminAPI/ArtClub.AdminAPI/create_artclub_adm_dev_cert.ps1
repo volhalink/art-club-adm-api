@@ -1,0 +1,1 @@
+. ..\create_dev_certificate.ps1 -projectname "Artclub_adm" -domain "artclub_adm", "artclub_adm_api", "artclub_adm_frontend" -pwdvalue  "Artclub_adm certificate password" -shouldsavekey $true
